@@ -1,29 +1,35 @@
 /* body { 
     background: darkblue;
 } */
-
-#te {
-  background: skyblue;
+#test1 {
   display: flex;
+  background: burlywood;
+  flex-direction: column;
+  margin: auto;
+  padding: 100px;
 }
 
-#ye {
+#aa {
+  background: skyblue;
+}
+
+#bb {
   background: orange;
 }
 
-#ue {
-  background: yellowgreen;
+#cc {
+  background: yellow;
 }
 
 #tt {
-  display: flex;
-  justify-content: flex-end;
-  flex: ;
   padding: 10px;
-  text-align: center;
+
   background: lawngreen;
-}
-h1 {
   display: flex;
-  justify-content: center;
+  justify-content: end;
+}
+
+.test1 {
+  background: orange;
+  padding: 3px;
 }
