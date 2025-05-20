@@ -1,0 +1,29 @@
+/* body { 
+    background: darkblue;
+} */
+
+#te {
+  background: skyblue;
+  display: flex;
+}
+
+#ye {
+  background: orange;
+}
+
+#ue {
+  background: yellowgreen;
+}
+
+#tt {
+  display: flex;
+  justify-content: flex-end;
+  flex: ;
+  padding: 10px;
+  text-align: center;
+  background: lawngreen;
+}
+h1 {
+  display: flex;
+  justify-content: center;
+}
