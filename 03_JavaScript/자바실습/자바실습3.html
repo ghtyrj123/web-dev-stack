@@ -13,7 +13,7 @@
         ["010", "1234", "5678"] → 010-1234-5678
         <script>
           const tel = ["010", "1234", "5678"];
-          const sel = tel.join("");
+          const sel = tel.join("-");
           console.log(sel);
         </script>
       </li>
@@ -34,10 +34,11 @@
         배열에서 원하는 항목만 잘라내서 출력하시오.
         <script>
           const music = ["가요", "팝송", "클래식", "재즈", "OST"];
-          const pop = music.slice(1, 4);
-          const ost = music.slice(4);
-          console.log(pop);
-          console.log(ost);
+
+          console.log(music.slice(1, 4));
+          console.log(music(music.length - 1));
+          console.log(music.slice(4));
+
           // [팝송, 클래식, 재즈]
           // [OST]
         </script>
@@ -76,8 +77,10 @@
         중복된 값이 있는 배열에서 중복을 제거한 새 배열을 만들어 출력하시오.
         <script>
           const dupArr = [1, 2, 2, 3, 3, 3];
-          const wow = new Set(dupArr);
+          const wow = [...new Set(dupArr)];
+
           console.log(wow);
+
           // [1, 2, 3]
         </script>
       </li>
