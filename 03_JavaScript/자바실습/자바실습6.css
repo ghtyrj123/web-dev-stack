@@ -1,37 +1,22 @@
-body  {
-    background-color: papayawhip;
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-header {
-    background-color: aqua;
-    padding: 10px;
-    height : 100% ;
-    
-  
-    
-    display: flex;
-    
-    justify-content: center;
-
-    flex-direction: column;
-
-
-
+h1,
+h2,
+h3 {
+  margin: 10px;
 }
 h1 {
-    
-    padding: 30px;
-    font-size: 1.5rem;
-    background-color: teal;
-
+  font-size: 4rem;
 }
-d
-    
-     
-    
-     
-
-     
-    
+h2 {
+  font-size: 2rem;
 }
-
+h3 {
+  font-size: 1rem;
+}

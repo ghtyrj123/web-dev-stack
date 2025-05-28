@@ -1,0 +1,26 @@
+body {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+section {
+  display: flex;
+  gap: 10px;
+
+  /* flex-direction: column; */
+  align-items: center;
+}
+
+section img {
+  border-radius: 50%;
+  padding: 15px;
+}
+
+section p {
+  padding: 10px;
+  background: orangered;
+  border-radius: 10%;
+}
