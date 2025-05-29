@@ -1,9 +1,12 @@
 body {
-  position: fixed;
+  text-align: center;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+  margin: 0;
 }
 
 section {
@@ -15,12 +18,28 @@ section {
 }
 
 section img {
-  border-radius: 50%;
-  padding: 15px;
+  width: 250px;
+  height: 250px;
+  border-radius: 49%;
+  object-fit: cover;
+  margin: 10px;
 }
 
-section p {
-  padding: 10px;
+section button {
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 5px 10px;
   background: orangered;
   border-radius: 10%;
+  cursor: pointer;
+  color: navy;
+}
+button:last-child {
+  background: navy;
+  color: orangered;
+}
+h3 {
+  font-style: italic;
+  visibility: hidden;
 }
