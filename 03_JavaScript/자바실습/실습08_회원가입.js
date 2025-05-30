@@ -34,6 +34,8 @@ pw.addEventListener("input", (e) => {
   }
 });
 
+newpw.addEventListener("input", (e) => {});
+
 named.addEventListener("input", (e) => {
   let yname = /^[가-힣]{2,}$/;
   if (yname.test(e.target.value)) {

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Web Storage API</h1>
+    <p>브라우저에 데이터를 저장하고 읽어오는 방법</p>
+
+    <h2>sessionStorage</h2>
+    <p>같은 탭/창에서만 유지, 브라우저 탭 닫으면 데이터삭제</p>
+
+    <button onclick="setSession()">데이터 저장</button>
+    <button onclick="getSeesion()">데이터 읽기</button>
+    <button onclick="removrSeesion()">데이터 삭제</button>
+    <button onclick="clearSeesion()">전체 삭제</button>
+    <script>
+      const setSession = () => {
+        sessionStorage.setItem("seesionName", "장효준");
+        sessionStorage.setItem("sessionAge", 10);
+      };
+
+      const getSeesion = () => {
+        const name = sessionStorage.getItem("sessionName"); // 이환희
+      };
+      const removrSeesion = () => {
+        sessionStorage.removeItem("sessionName");
+      };
+      const clearSeesion = () => {
+        sessionStorage.clear();
+      };
+    </script>
+
+    <h2>localStorage</h2>
+    <p>브라우저에 영구적으로 데이터 저장, 브라우저 종료해도 유지</p>
+    <button onclick="setLocal()">데이터 저장</button>
+    <button onclick="getLocal()">데이터 읽기</button>
+    <button onclick="removeLocal()">데이터 삭제</button>
+    <button onclick="clearLocal()">전체 삭제</button>
+    <script>
+      const setLocal = () => {
+        localStorage.setItem("LocalName1", "이환희");
+        localStorage.setItem("LocalAge1", 10);
+      };
+
+      const getLocal = () => {
+        const name1 = localStorage.getItem("LocalName1"); // 이환희
+      };
+      const removeLocal = () => {
+        localStorage.removeItem("LocalName1");
+      };
+      const clearLocal = () => {
+        localStorage.clear();
+      };
+    </script>
+  </body>
+</html>

@@ -37,3 +37,8 @@ button {
 button:last-child {
   background-color: mediumturquoise;
 }
+
+#logout {
+  display: block;
+  margin: auto;
+}
