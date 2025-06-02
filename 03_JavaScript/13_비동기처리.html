@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>비동기 처리</h1>
+    <p>
+      JS는 싱글스레드(한 번에 한 작업)라 비동기로 대기중에도 UI와 로직을
+      유지해야함. 서버요청, 타이머 등 처리 주엥도 다른 직업이 멈추지 않도록 하기
+      위해 처리
+    </p>
+
+    <h2>콜백(callback)</h2>
+    <button onclick="callback()">콜백 실행</button>
+    <p id="callbackResult"></p>
+    <script>
+      const callback = () => {
+        callbackResult.innerHTML = "0초 후 실행";
+        setTimeout(() => {
+          callbackResult.innerHTML = "1초 후 실행";
+        }, 1000);
+        setTimeout(() => {
+          callbackResult.innerHTML = "2초 후 실행";
+        }, 1000);
+        //콜백 중첩으로 코드 가독성이 떨어지고 유지보수도 어려움
+        callbackResult.innerHTML = "0초 후 실행";
+      };
+    </script>
+    <h2 onclick="promise()">Promise</h2>
+    <button>Promise 실행</button>
+    <p id="PromiseResult"></p>
+    <script>
+      const promise = () => {
+        new promise((resolve) => {
+          setTimeout(() => resolver("첫뻔째 완료"), 1000);
+        })
+          .then((result) => {
+            promiseResult.innerHTML = result;
+
+            //then()을 연속 호출해 비동기 작업 순서을 표현 -체이닝 방식
+            return new promise(() => {
+              setTimeout(() => resolve("2초 후 실행"), 1000);
+            });
+          })
+          .then((resolve) => {
+            promiseResult.innerHTML = result;
+            return new Promise(() =>
+                setTimeout(() =>) resolve("3초 후 실행"), 1000);
+
+            })
+          };
+          .then((result)) => {
+            promiseResult.innerHTML = result
+          }
+      ;
+    </script>
+
+    <h2>async / await</h2>
+    <button onclick="asyncAwait()">asyncAwait 실행</button>
+    <p id="asyAwaResult"></p>
+    <script>
+      const delay = (message) => {
+        return new Promise((resolve) =>
+          setTimeout(() => resolve(message), 1000)
+        );
+      };
+      const asyncAwait = async () => {
+        const response = await delay("1초후 실행");
+        console.log(response);
+        asyAwaResult.innerHTML = response;
+        const response2 = await delay("2초 후 실행");
+        asyAwaResult.innerHTML = response2;
+        const response3 = await delay("3초 후 실행");
+        asyAwaResult.innerHTML = response3;
+      };
+    </script>
+    <h2>서버와 연동 fetch + async/await</h2>
+    <button onclick="festchData()">데이터 가져오가</button>
+    <p id=" fetchResult"></p>
+
+    <script>
+      const festchData = async () => {
+        const response = await fetch("https://api.tvmaze.com/shows");
+
+        const data = await response.json();
+        console.log(data);
+        fetchResult.innerHTML = `${date[0].name}`;
+      };
+    </script>
+  </body>
+</html>
