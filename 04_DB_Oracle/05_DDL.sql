@@ -1,0 +1,508 @@
+/*
+    DDL(Data Definition Language) : 데이터 정의어
+    - 실제 데이터 값이 아닌 구조 자체를 정의하는 언어
+    - 객체(스키마)를 만들고(CREATE), 변경하고(ALTER), 삭제(DROP)하는 언어
+    -DB 관리자, 설계자가 사용
+    오라클에서 제공하는 객체(구조) /스키마(Schema) : 테이블(TABLE), 뷰(VIEW), 시퀀스(SEQUNCE),
+    인덱스(INDEX), 패키지(PACKAGE), 트리거(TRIGGER), 프로시져(PROCEDURE), 함수(FUNCTION)
+    동의어(SYNONYM), 사용자(USER) 
+
+
+*/
+
+/*
+ CREATE
+    - 객체를 생성하는 구문
+    
+    테이블 생성
+    - 테이블이란? 행(ROW)와 열(COLUMN)로 구성되는 가장 기본적인 데이터베이스
+            데이터베이스 내에 모든 데이터는 테이블에 저장됨!
+            
+            CREATE TABLE 테이블명(
+            컬럼명 자료형(크기),
+            컬럼명 자료형(크기),
+            ....
+            );
+            
+            * 자료형
+            1. 문자(CHAR / VARCHAR2) - 반드시 크기를 지정해야 함
+            - CHAR : 최대 2000BYTE 까지 저장 가능
+                    고정 길이 (아무리 작은 값이 들어와도 처음 할당된 크기 그대로)
+                    고정된 글자수의 데이터만 담길 때 사용
+            - VARCHAR2 : 최대 4000BYTE 까지 저장 가능
+                    가변 길이 (담긴 값에 따라서 공간의 크기 맞춰줌)
+                    몃 글자의 데이터가 들어올지 모를 경우 사용
+                    
+            2. 숫자(NUMBER)
+            3. 날짜(DATE)
+*/
+
+-- 회원에 대한 데이터를 담는 MEMBER 테이블 생성
+
+CREATE TABLE MEMBER(
+    MEM_NO NUMBER,
+    MEM_ID VARCHAR2(20),
+    MEM_PWD VARCHAR2(20),
+    MEN_NAME VARCHAR2(20),
+    GENDER CHAR(3),
+    PHONE VARCHAR2(13),
+    EMAIL VARCHAR2(50),
+    MEN_DATE DATE
+    
+);
+
+-- 테이블 구조를 표시
+DESC MEMBER;
+/*
+    데이터 딕셔너리
+    - 다양한 개체들의 정보를 저장하고 있는 시스템 테이블
+    - 사용자가 객체를 생성하거나 객체를 변경하는 등의 작업을 할 때 데이터베이스 서버에
+    의해서 자동적으로 갱신되는 테이블
+*/
+
+
+-- USER_TABLES : 사용자가 가지고 있는 테이블의 전반적인 구조를 확인 할 수 있는 시스템 테이블
+SELECT * FROM USER_TABLES;
+
+-- USER_TAB_COLUMMS : 사용자가 가지고 있는 테이블을 상의 모둔 컬럼의 전반적인 구조를 확인할 수 있는 시스템 테이블 
+
+/*
+    컬럼 주석
+    - 테이블 컬럼에 대한 설명을 작성할 수 있는 구문
+    COMMENT ON COLUMN 테이블명, 컬럼명 IS '주석내용';
+*/
+
+COMMENT ON COLUMN MEMBER.MEM_ID IS '회원번호';
+
+-- 테이블에 데이터 추가시키는 구문 (DML : INSERT)
+-- INSERT INTO 테이블명 VALUES(값, 값, 값, ....);
+
+INSERT INTO MEMBER VALUES(1, 'user01', 'pass01', '윤의진', '남', '010-1111-2222', 'aaa@naver.com', '25/06/05');
+INSERT INTO MEMBER (MEM_NO, MEM_ID, MEM_PWD, MEM_NAME) VALUES(2, 'user02', 'pass02', '이진용');
+INSERT INTO MEMBER VALUES(NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+SELECT * FROM MEMBER;
+    
+    /*
+        제약조건(CONSTRAINTS)
+        - 사용자가 원하는 조건의 데이터만 유지하기 위해서 각 컬럼에 대해 저장될 값에 대한
+        제약 조건을 설정
+        
+        - 제약 조건은 데이터 무결성을 목적으로 한다. (데이터의 정확성과 일관성을 유지시키는 것)
+        - 종류 : NOT NULL, NUIQUE, CHECK, PRIMARY KEY, FOREIGN KEY
+        
+        CREATE TABLE 테이블명(
+            컬럼명 자료형(크기) [CONSTRAINT 제약조건명] 제약조건,
+            ...
+    */
+/*
+    NOT NULL 제약조건
+    - 해당 컬럼에 반드시 값이 존재해야만 하는 경우 (즉, 해당 컬럼에 절때 NULL이 들어와서는 안되는 경우)
+    -추가 / 수정 시 NULL 값을 허용하지 않도록 제한
+    
+*/
+
+CREATE TABLE MEM_NOTNULL(
+      MEM_NO NUMBER NOT NULL,
+    MEM_ID VARCHAR2(20)NOT NULL,
+    MEM_PWD VARCHAR2(20)NOT NULL,
+    MEN_NAME VARCHAR2(20)NOT NULL,
+    GENDER CHAR(3),
+    PHONE VARCHAR2(13),
+    EMAIL VARCHAR2(50),
+    MEN_DATE DATE NOT NULL
+);
+
+INSERT INTO MEM_NOTNULL VALUES(1, 'user01', 'pass01', '윤의진', '남', '010-1111-2222', 'aaa@naver.com', '25/06/05');
+INSERT INTO MEM_NOTNULL (MEM_NO, MEM_ID, MEM_PWD, MEM_NAME, MEM_DATE) VALUES(2, 'user02', 'pass02', '이진용', SYSDATE);
+INSERT INTO MEM_NOTNULL VALUES(NULL, NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+
+SELECT * FROM MEM_NOTNULL;
+
+/*
+    UNIQUE 재약조건
+    - 해당 컬럼에 중복된 값이 들어와서는 안 되는 경우
+    - 컬럼값에 중복값을 제한하는 제약 조건
+    -추가 / 수정 시 기존에 있는 데이터값 중 중복값이 있을 경우 오류
+*/
+
+
+CREATE TABLE MEM_UNIQUE(
+      MEM_NO NUMBER NOT NULL,
+    MEM_ID VARCHAR2(20)NOT NULL UNIQUE,
+    MEM_PWD VARCHAR2(20)NOT NULL,
+    MEN_NAME VARCHAR2(20)NOT NULL,
+    GENDER CHAR(3),
+    PHONE VARCHAR2(13),
+    EMAIL VARCHAR2(50),
+    MEN_DATE DATE NOT NULL
+);
+
+INSERT INTO MEM_UNIQUE VALUES(1, 'user01', 'pass01', '윤의진', '남', '010-1111-2222', 'aaa@naver.com', '25/06/05');
+INSERT INTO MEM_UNIQUE (MEM_NO, MEM_ID, MEM_PWD, MEN_NAME, MEN_DATE) VALUES(2, 'user02', 'pass02', '이진용', SYSDATE);
+INSERT INTO MEM_UNIQUE (MEM_NO, MEM_ID,MEM_PWD, MEN_NAME, GENDER, MEN_DATE) VALUES(3, 'user03', 'pass03', '곽병현', 'O', SYSDATE);
+
+SELECT * FROM MEM_UNIQUE;
+
+/*
+    CHECK(조건식) 제약 조건
+    -해당 컬럼에 들어올 수 있는 값에 대한 조건을 제시해볼 수 있음!
+    -해당 조건에 만족한는 데이터값만 담길 수 있음
+*/
+
+CREATE TABLE MEM_CHECK(
+      MEM_NO NUMBER NOT NULL,
+    MEM_ID VARCHAR2(20)NOT NULL UNIQUE,
+    MEM_PWD VARCHAR2(20)NOT NULL,
+    MEN_NAME VARCHAR2(20)NOT NULL,
+    GENDER CHAR(3) CHECK(GENDER IN ('남', '여')) NOT NULL,
+    PHONE VARCHAR2(13),
+    EMAIL VARCHAR2(50) CHECK(EMIAL LIKE '%@%'),
+    MEN_DATE DATE NOT NULL
+);
+
+DROP TABLE MEM_CHECK
+
+INSERT INTO MEM_CHECK VALUES(1, 'user01', 'pass01', '윤의진', '남', '010-1111-2222', 'aaa@naver.com', '25/06/05');
+INSERT INTO MEM_CHECK (MEM_NO, MEM_ID, MEM_PWD, MEN_NAME, MEN_DATE) VALUES(2, 'user02', 'pass02', '이진용', SYSDATE, '남');
+INSERT INTO MEM_CHECK (MEM_NO, MEM_ID,MEM_PWD, MEN_NAME, GENDER, MEN_DATE, EMAIL) VALUES(3, 'user03', 'pass03', '곽병현', 'O', SYSDATE, 'bbb@google.com');
+
+SELECT * FROM MEM_CHECK;
+
+
+/*
+    primary key(기본키) 제약 조건
+    - 테이블에서 각 행들을 식별하기 위해 사용될 컬럼에 부여하는 제약조건 (식별자 역활)
+    EX) 회원번호, 학번, 사원번호, 부서코드, 직급코드, 주문번호, 예약번호, 운송장 번호.....
+    
+    PRIMARY KEY 제약조건을 부여하면 그  컬럼은 자동으로 NOT NULL + UNIQUE 제약 조건이 설정됨
+    -한 테이블 당 오로지 한 개만 설정 가능
+
+*/
+
+
+CREATE TABLE MEM_PRI(
+
+
+      MEM_NO NUMBER PRIMARY KEY,
+    MEM_ID VARCHAR2(20)NOT NULL UNIQUE,
+    MEM_PWD VARCHAR2(20)NOT NULL,
+    MEN_NAME VARCHAR2(20)NOT NULL,
+    GENDER CHAR(3) CHECK(GENDER IN ('남', '여')) NOT NULL,
+    PHONE VARCHAR2(13),
+    EMAIL VARCHAR2(50)CHECK(EMIAL LIKE '%@%'),
+    MEN_DATE DATE NOT NULL
+);
+
+DROP TABLE MEM_CHECK
+
+INSERT INTO MEM_PRI VALUES(1, 'user01', 'pass01', '윤의진', '남', '010-1111-2222', 'aaa@naver.com', '25/06/05');
+INSERT INTO MEM_PRI (MEM_NO, MEM_ID, MEM_PWD, MEN_NAME, MEN_DATE) VALUES(2, 'user02', 'pass02', '이진용', SYSDATE, '남');
+INSERT INTO MEM_PRI (MEM_NO, MEM_ID,MEM_PWD, MEN_NAME, GENDER, MEN_DATE, EMAIL) VALUES(3, 'user03', 'pass03', '곽병현', 'O', SYSDATE, 'bbb@google.com');
+
+SELECT * FROM MEM_CHECK;
+
+-- PRIMARY KEY 자동! SEQUENCE 사용
+
+CREATE SEQUENCE MEM_SEQ START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE ;
+
+
+
+
+CREATE TABLE MEM_PRI(
+      MEM_NO NUMBER PRIMARY KEY,
+    MEM_ID VARCHAR2(20)NOT NULL UNIQUE,
+    MEM_PWD VARCHAR2(20)NOT NULL,
+    MEN_NAME VARCHAR2(20)NOT NULL,
+    GENDER CHAR(3) CHECK(GENDER IN ('남', '여')) NOT NULL,
+    PHONE VARCHAR2(13),
+    EMAIL VARCHAR2(50)CHECK(EMIAL LIKE '%@%'),
+    MEN_DATE DATE NOT NULL
+);
+
+DROP TABLE MEM_CHECK
+
+INSERT INTO MEM_PRI VALUES(1, 'user01', 'pass01', '윤의진', '남', '010-1111-2222', 'aaa@naver.com', '25/06/05');
+INSERT INTO MEM_PRI (MEM_NO, MEM_ID, MEM_PWD, MEN_NAME, MEN_DATE) VALUES(2, 'user02', 'pass02', '이진용', SYSDATE, '남');
+INSERT INTO MEM_PRI (MEM_NO, MEM_ID,MEM_PWD, MEN_NAME, GENDER, MEN_DATE, EMAIL) VALUES(3, 'user03', 'pass03', '곽병현', 'O', SYSDATE, 'bbb@google.com');
+
+SELECT * FROM MEM_CHECK;
+
+-- 오라클 예전 버전 X
+
+CREATE TABLE MEM_MEMBER(
+      MEM_NO NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    MEM_ID VARCHAR2(20)NOT NULL UNIQUE,
+    MEM_PWD VARCHAR2(20)NOT NULL,
+    MEN_NAME VARCHAR2(20)NOT NULL,
+    GENDER CHAR(3) CHECK(GENDER IN ('남', '여')) NOT NULL,
+    PHONE VARCHAR2(13),
+    EMAIL VARCHAR2(50)CHECK(EMIAL LIKE '%@%'),
+    MEN_DATE DATE NOT NULL
+);
+
+
+INSERT INTO MEM_PRI2(MEN_NO, MEM_ID, MEM_PWD, MEM_NAME, GENDER, PHONE, EMAIL, MEN_DATE);
+INSERT INTO MEM_PRI2 VALUES(1, 'user01', 'pass01', '윤의진', '남', '010-1111-2222', 'aaa@naver.com', '25/06/05');
+INSERT INTO MEM_PRI2 (MEM_NO, MEM_ID, MEM_PWD, MEN_NAME, MEN_DATE) VALUES(2, 'user02', 'pass02', '이진용', SYSDATE, '남');
+INSERT INTO MEM_PRI2 (MEM_NO, MEM_ID,MEM_PWD, MEN_NAME, GENDER, MEN_DATE, EMAIL) VALUES(3, 'user03', 'pass03', '곽병현', 'O', SYSDATE, 'bbb@google.com');
+
+SELECT * FROM MEM_CHECK;
+
+
+
+--  회원등급에 대한 데이터를 보관하는 테이블
+
+CREATE TABLE MEM_GRADE(
+GRADE_CODE NUMBER  GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+GRADE_NAME VARCHAT2(30) NOT NULL
+);
+
+INSERT INTO MEM_GRADE(GRADE_NAME) VALUES('일반회원');
+INSERT INTO MEM_GRADE(GRADE_NAME) VALUES('우수회원');
+INSERT INTO MEM_GRADE(GRADE_NAME) VALUES('일반회원');
+
+CREATE TABLE MEM_MEMBER(
+      MEM_NO NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    MEM_ID VARCHAR2(20)NOT NULL UNIQUE,
+    MEM_PWD VARCHAR2(20)NOT NULL,
+    MEN_NAME VARCHAR2(20)NOT NULL,
+   
+
+);
+
+FROM MEN
+
+
+/*
+    FOREIGN KEY (외래키) 제약조건
+    - 외래키 역활을 하는 컬럼에 부여하는 제약조건
+    -다른 테이블에 존재하는 값만 들어와야 되는 특정 컬럼에 부여하는 제약조건
+    
+    --> 다른 테이블을 참조한다고 표현
+    --> 주로 FOREIGN KEY 제약 조건에 의해 테이블 간의 관계가 형성
+*/
+
+CREATE TABLE MEM_MEMBER2(
+      MEM_NO NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    MEM_ID VARCHAR2(20)NOT NULL UNIQUE,
+    MEM_PWD VARCHAR2(20)NOT NULL,
+    MEN_NAME VARCHAR2(20)NOT NULL,
+    GENDER CHAR(3) CHECK(GENDER IN ('남', '여')) NOT NULL,
+    PHONE VARCHAR2(13),
+    EMAIL VARCHAR2(50)CHECK(EMIAL LIKE '%@%'),
+    MEN_DATE DATE NOT NULL
+    GRADE_ID NUMBER REFERENCES MEM_GRADE(GRADE(GRADE_CODE)
+);
+
+
+INSERT INTO MEM_MEMBER2(MEN_NO, MEM_ID, MEM_PWD, MEM_NAME, GENDER, PHONE, EMAIL, MEN_DATE);
+INSERT INTO MEM_MEMBER2 VALUES(1, 'user01', 'pass01', '윤의진', '남',1);
+INSERT INTO MEM_MEMBER2 (MEM_NO, MEM_ID, MEM_PWD, MEN_NAME, MEN_DATE) VALUES(2, 'user02', 'pass02', '이진용',2);
+INSERT INTO MEM_MEMBER2 (MEM_NO, MEM_ID,MEM_PWD, MEN_NAME, GENDER, MEN_DATE, EMAIL) VALUES(3, 'user03', 'pass03', '곽병현', 3);
+
+
+
+-- MEN_M
+-- 데이터 삭제 :DELETE FROM 테이블명 WHERE 조건;
+-- MEM_GRADE 테이블에서 GRADE_CODE가 1인 걸 삭제
+
+DELETE FROM MEM_GRADE WHERE GRADE_CODE = 1;
+
+-- 부모테이블(MEM_GRADE)에서 데이터 값을 삭제할 경우 문제 발생!
+-- 이유가 자식 레코드가 있어서 삭제되지 않음!
+DELETE FROM MEM_MEMBER2 WHERE MEM MEM_NO =1;
+
+SELECT * FROM MEM_MEMBER2;
+
+-- 테이블 삭제
+
+DROP TABLE MEM_MEMBER2;
+DROP TABLE MEM_GRADE;
+
+/*
+    자식테이블 생성시 외래키 젲약조건 부여할 때 삭제옵션 지정
+    * 삭제 옵션 : 부모 테이블의 데이터 삭제 시 그 데이터를 사용하고 있는 자식 테이블의 값을 어떻게 처리할 건지
+    
+    -ON DELETE RESTRICTED (기본값)
+    : 자식 데이터로 쓰리는 부모 데이터는 삭제 아예 안되게끔
+    -ON DELETE SET NULL
+    : 부모데이터 삭제시 해당 데이터를 쓰고 있는
+    자식 데이터의 값을 NULL로 변경
+    
+    -ON DELETE CASCADE
+    -부모 데이터 삭제시 해당 데이터를 쓰고 있는 자식데이터도 같이 삭제시킴
+    
+*/
+
+CREATE TABLE MEM_GRADE(
+    GRADE_CODE NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    GRADE_NAME VARCHAR2(30) NOT NULL
+);
+
+INSERT INTO MEM_GRADE(GRADE_NAME) VALUES ('일반회원');
+INSERT INTO MEM_GRADE(GRADE_NAME) VALUES ('우수회원');
+INSERT INTO MEM_GRADE(GRADE_NAME) VALUES ('특별회원');
+DROP MEMBER2 ;
+CREATE TABLE MEM_MEMBER2(
+    MEM_NO NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    MEM_ID VARCHAR2(20) NOT NULL UNIQUE,
+    MEM_PWD VARCHAR2(20) NOT NULL,
+    MEM_NAME VARCHAR2(20) NOT NULL,
+    GRADE_ID NUMBER,
+    FOREIGN KEY (GRADE_ID) REFERENCES MEM_GRADE(GRADE_CODE) ON DELETE SET NULL
+);
+
+INSERT INTO MEM_MEMBER2(MEM_ID, MEM_PWD, MEM_NAME, GRADE_ID)
+VALUES('user01', 'pass01', '윤의진', 1);
+INSERT INTO MEM_MEMBER2(MEM_ID, MEM_PWD, MEM_NAME, GRADE_ID)
+VALUES('user02', 'pass02', '이진용', 2);
+INSERT INTO MEM_MEMBER2(MEM_ID, MEM_PWD, MEM_NAME, GRADE_ID)
+VALUES('user03', 'pass03', '곽병현', 3);
+
+SELECT * FROM MEM_MEMBER2;
+SELECT * FROM MEM_GRADE;
+
+DELETE FROM MEM_MGRADE WHERE GRADE_CODE = 2;
+
+/*
+    DEFAULT 기본값
+    -제약조건 아님!
+    -컬럼을 선정하지 않고 INSERT 시 NULL이 아닌 기본값을
+    IMSERT 하고자 할 때 세팅해둘 수 있는 값
+*/
+DROP TABLE MEMBER;
+
+CREATE TABLE MEMBER(
+MEM_NO NUMBERR GENERATED ALWAYS AS IDENTITY ORIMARY KEY,
+MEM_NAME VARCHAR2(20) NOT NULL,
+MEM_AGE NUMBER DEFAULT 10,
+HOBBY VARCHAR2(20) DEFAULT '게임',
+ENROLL_DATE DATE DEFAULT SYSDATE
+);
+
+INSERT INFO MEMBER(MEM_NAME) VALUES('윤의진');
+INSERT INFO MEMBER(MEM)NAME, MEM_AGE) VALUES('이진용', 20);
+INSERT INFO MEMBER(MEM_NAME, MEM_AGE, HOBBY) VALUES('곽병현', 15, '영화 감상');
+SELECT * FROM MEMBER;
+
+-- 도서관리 프로그램 테이블들
+-- 테이블명 : PUBLISHER
+-- 컬럼 : PUB_NO - 숫자, 기본키
+--       PUB_NAME - 문자(50), NULL 허용 X
+--       PHONE - 문자(20)
+-- 테이블명 : BOOK
+-- 컬럼 : BK_NO - 숫자, 기본키
+--       BK_TITLE - 문자(50), NULL X
+--       BK_AUTHOR - 문자(50), NULL X
+--       PUB_NO - 숫자, 외래키
+--               (PUBLISHER의 PUB_NO, 삭제 조건 CASCADE)
+-- 테이블명 : MEMBER (위에 있으니까 DROP 한번 해주시고!)
+-- 컬럼 : MEMBER_NO - 숫자, 기본키
+--       MEMBER_ID - 문자(50), 중복 허용 X
+-- 테이블명 : RENT
+-- 컬럼 : RENT_NO - 숫자, 기본키
+--       MEMBER_NO - 숫자, 외래키
+--            (MEMBER의 MEMBER_NO, 삭제 조건 SET NULL)
+--       BK_NO - 숫자, 외래키
+--            (BOOK의 BK_NO, 삭제 조건 SET NULL)
+
+
+CREATE TABLE PUBLISHER (
+PUB_NO NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+PUB_NAME VARCHAR2(50)NOT NULL,
+PHONE VARCHAR2(20)
+);
+INSERT INTO PUBLTSHER(PUB_NAME, PHONE)
+VALUES('오픈도어북스', '070-4170-1080');
+INSERT INTO PUBLISHER(PUB_NAME, PHONE)
+VALUES('모티브', '02-3141-6921');
+
+
+CREATE TABLE BOOK(
+BK_NO NUMBER GENERATED ALWAYS AS IDENTITY  PRIMARY KEY,
+BK_TITLE VARCHAR2(50) NOT NULL,
+BK_AUTHOR VARCHAR2(50) NOT NULL,
+PUB_NO NUMBER REFERENCES PUBLISHER(PUB_NO) ON DELETE CASCADE
+);
+INSERT INTO BOOK (BK_TITLE, BK_AUTHOR, PUB_NO)
+VALUES('누구도 대신 살아 주지 않는다', '브라이언 트레이시', 1);
+INSERT INTO BOOK (BK_TITLE, BK_AUTHOR, PUB_NO)
+VALUES('게으르게 살지만 부자는 되고 싶어', '에프리' , 2);
+INSERT INTO BOOK (BK_TITLE, BK_AUTHOR, PUB_NO)
+VALUES('왜 항상 아가리로만 할까?' , '이창현', 2);
+
+
+CREATE TABLE MEMBER (
+MEMBER_NO NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+MEMBER_ID  VARCHAR2(50) UNIQUE 
+
+
+);
+
+INSERT INTO MEMBER(MEMBER_ID) VALUES('박민수');
+INSERT INTO MEMBER(MEMBER_ID) VALUES('전민철');
+SELECT * FROM MEMBER;
+
+CREATE TABLE RENT(
+RENT_BO NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+MEMBER_NO NUMBER REFERENCES MEMBER(MEMBER_NO) ON DELETE SET
+BK_NO NUMBER REFERENCES BOOK(BK_NO) ON DELETE SET NULL
+);
+INSERT INTO RENT (MEMBER_NO, BK_NO)
+VALUES(1, 1);
+
+INSERT INTO RENT (MEMBER_NO, BK_NO)
+VALUES(2, 3);
+
+INSERT INTO RENT (MEMBER_NO, BK_NO)
+VALUES(2, 2);
+SELECT * FROM RENT;
+
+-- RENT : MEMBER_ID, BK_TITLE, PUB_NAME
+
+S
+SELECT MEMBER_ID, BK_TITLE, PUB_NAME
+
+FROM RENT R
+JOIN MEMBER ON(R.MEMBER_NO = M.MEMBER_NO);
+JOIN BOOK B ON(R.BK_NO = B.BK_NO);
+JOIN PUBLISHER P ON(P.PUB_NO = B.PUB_NO);
+SELECT * FROM BOOK;
+SELECT * FROM PUBLISHER;
+
+
+
+
+CREATE TABLE RENT(
+    RENT_NO NUMBER  PRIMARY KEY,
+    MEMBER_NO NUMBER FOREIGN KEY
+);
+
+
+옵티머스LTE2 -> LG VOLT ->갤럭시 ON7 PRIME -> 갤럭시 그랜드4 -> 갤럭시 노트5->
+갤럭시 S8 -> 갤럭시S4 -> 아이폰6 -> 아이폰6 플러스 -> 아이폰 12프로 맥스 -> 갤럭시 노트10 ->
+갤럭시 노트 FE -> 아이폰8 -> 아이폰7 플러스 -> 갤럭시노트 20+ -> 아이폰 15플러스 -> 갤럭시S24 ->
+아이폰16프로 맥스 -> 아이폰 16프로
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

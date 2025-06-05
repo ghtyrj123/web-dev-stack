@@ -398,6 +398,13 @@ FROM DUAL;
     
     DECODE(값, 조건값1, 결과값1, 조건값2, 결과값2, ....)
     - 비교하고자 하는 값이 조건값과 일치하는 경우 그에 해당하는 결과값 반환 
+    
+    CASE WHEN 조건식1 THEN 결과값1
+    WHEN 조건식2 THEN 결과값2
+    .....
+    ELSE 결과값N 
+    
+    END
 */
 
 -- EMPLOYEE에서 주민번호(EMP_NO)로 성별(남, 여) 조회
@@ -405,5 +412,61 @@ SELECT EMP_NO,
 SUBSTR(EMP_NO,8,1),
 DECODE(SUBSTR(EMP_NO,8,1),1,'남',2,'여')
 FROM EMPLOYEE;
+
+
+SELECT EMP_NO,
+SUBSTR(EMP_NO,8,1), -- 몃번째 문자 // 추출할 번호 갯수
+INSTR(EMP_NO, 1, 1)  -- 찾을 문자// 시작위치
+FROM EMPLOYEE;
+
+-- 직급 코드가 j7인 사원은 급여를 10%인상
+SELECT JOB_CODE,SALARY,
+DECODE(JOB_CODE, 'J7', SALARY *1.1, 'J6', SALARY * 1.15, 'J5' , SALARY * 1.2, SALARY * 1.05) "인상된 급여"
+FROM EMPLOYEE
+ORDER BY JOB_CODE, "인상된 급여" DESC;
+
+SELECT 
+EMP_NAME, EMP_NO,
+    CASE WHEN SUBSTR(EMP_NO,8,1) =1 THEN '남'
+        WHEN SUBSTR(EMP_NO,8,1)= 2 THEN '여'
+        END
+FROM EMPLOYEE;
+
+
+
+-- 직급 코드가 j6인 사원은 급여를 15% 인상
+-- 직급 코드가 j5인 사원은 급여를 20%인상
+--그외 직급 사원은 급여를 5%인상
+-- 정렬 : 직급코드(JOB_CODE) J1부터, 인상된 급여 높은 순서대로
+
+
+
+SELECT EMP_NAME, SALARY,
+CASE WHEN SALARY > 5000000 THEN '1등급'
+    
+       WHEN   SALARY > 3500000   THEN '2등급'
+     
+      WHEN   SALARY > 2000000 THEN '3등급'
+      ELSE '4등급'
+      END
+
+FROM EMPLOYEE;
+
+
+SELECT 
+    CASE JOB_CODE WHEN  'J7' THEN SALARY * 1.1
+      WHEN  'J6' THEN SALARY * 1.15
+      WHEN  'J5' THEN SALARY * 1.12
+      ELSE SALARY * 1.05 
+        
+    END "총 인상된 급여"
+    FROM EMPLOYEE;
+
+-- 급여가 500만원 초과일 경우 1등급
+--급여가 500만원 이하 350만원 초과일 경우 2등급
+--급여가 350만원 이하 200만원 초과일 경우 3등급
+
+
+
 
 
