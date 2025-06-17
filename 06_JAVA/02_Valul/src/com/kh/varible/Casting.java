@@ -12,7 +12,7 @@ public class Casting {
 	public static void main(String[] args) {
 		Casting casting = new Casting();
 //		casting.autoCasting();
-		casting.casting()
+		casting.casting();
 		/*
 		 * 자동 형 변환 (목시적 형 변환)
 		 * 자동으로 형 변환이 이루어 지기 때문에 따로 형 변환 하지 않아도 된다.
