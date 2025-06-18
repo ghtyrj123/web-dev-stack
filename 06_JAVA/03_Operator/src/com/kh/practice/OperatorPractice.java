@@ -12,11 +12,11 @@ public class OperatorPractice {
 		//o.method1();
 		//o.method2();
 		//o.method3();
-		o.method4();
+		//o.method4();
 		o.method5();
-		o.method6();
-		o.method7();
-		o.method8();
+		//o.method6();
+		//o.method7();
+		//o.method8();
 		
 	}
 
@@ -39,10 +39,12 @@ public class OperatorPractice {
 	//만약 432이라면 400, 111이라면 100이 출력됩니다.
 	public void method2() {
 		System.out.println("숫자를 입력해요");
-		int num = sc.nextInt();
 		
-		int num1 = num ;
-		System.out.println(num1);
+		int num = Integer.parseInt(sc.nextLine());
+		System.out.println(num - num % 100);
+		System.out.println(num / 100 * 100);
+		
+		
 		
 	}
 
@@ -57,23 +59,25 @@ public class OperatorPractice {
 		System.out.println("정수3 입력");
 		int num4 = sc.nextInt();
 		
-		String  num5 = num2 == num3  ? "true" : "false";
+	System.out.println(num2 == num3 && num3 == num4);
 		
 	}
 
 	//입력 받은 하나의 정수가 짝수이면 "짝수다", 짝수가 아니면 "짝수가 아니다"를 출력하세요.
 	public void method4() {
 		System.out.println("정수입력");
-		int a = sc.nextInt();
+		int a = 9;
+		int b = Integer.parseInt(sc.nextLine());
 		
-		bo b = a % 2 == 0 ;
-		System.out.println("짝수다");
-		System.out.println("아니다");
+		System.out.println(b % 2 == 0  ? "짝수다" : "아니다");
+		
 		
 	}
 
 	//주민번호(-포함)를 입력받아 남자인지 여자인지 구분하여 출력하세요
 	public void method5() {
+		char no = "012345-7234567".charAt(7);
+		System.out.println(no == '1' ||);
 		
 	}
 
